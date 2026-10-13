@@ -52,7 +52,15 @@ for (const lang of langs) {
   if (extra.length) { console.warn(`⚠ ${lang}: en.json'da olmayan anahtarlar: ${extra.join(", ")}`); problems++; }
 
   const t = { ...base, ...strings };
+  // Ekran görüntüleri: src/img/<dil>/<ad>.webp varsa o, yoksa İngilizcesi
+  const img = (name) => fs.existsSync(path.join(SRC, "img", lang, `${name}.webp`))
+    ? `/assets/img/${lang}/${name}.webp` : `/assets/img/${DEFAULT_LANG}/${name}.webp`;
   const vals = {
+    imgResult: img("result"),
+    imgNova: img("nova"),
+    imgScan: img("scan"),
+    imgWeight: img("weight"),
+    imgReport: img("report"),
     ...t,
     lang,
     siteUrl: SITE_URL,
@@ -81,8 +89,68 @@ for (const lang of langs) {
   console.log(`✔ public/${lang}/index.html`);
 }
 
+// ---- Hukuki sayfalar -----------------------------------------------------
+// src/legal/<dil>/<sayfa>.html  →  public/<dil>/<sayfa>/index.html
+// Bir dilde sayfa yoksa İngilizcesi kullanılır.
+// Varsayılan dil ayrıca kökte de üretilir (ör. /deleteaccount/) — Play Console'a
+// kayıtlı eski adresler bozulmasın diye.
+const legalTemplate = fs.readFileSync(path.join(SRC, "legal-template.html"), "utf8");
+const legalDir = path.join(SRC, "legal");
+const slugs = fs.readdirSync(path.join(legalDir, DEFAULT_LANG))
+  .filter((f) => f.endsWith(".html"))
+  .map((f) => f.replace(".html", ""));
+
+const meta = (html, name) => (html.match(new RegExp(`<!--\\s*${name}:\\s*(.*?)\\s*-->`)) || [])[1] || "";
+
+for (const slug of slugs) {
+  const slugHreflang = [
+    ...langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE_URL}/${l}/${slug}/">`),
+    `<link rel="alternate" hreflang="x-default" href="${SITE_URL}/${DEFAULT_LANG}/${slug}/">`,
+  ].join("\n");
+
+  for (const lang of langs) {
+    const own = path.join(legalDir, lang, `${slug}.html`);
+    const file = fs.existsSync(own) ? own : path.join(legalDir, DEFAULT_LANG, `${slug}.html`);
+    if (file !== own) console.warn(`⚠ ${lang}: ${slug} çevirisi yok, İngilizce kullanıldı`);
+    const content = fs.readFileSync(file, "utf8");
+    const t = { ...base, ...load(lang) };
+    const vals = {
+      ...t,
+      lang,
+      slug,
+      year: String(new Date().getFullYear()),
+      privacyUrl: PRIVACY_URL,
+      termsUrl: TERMS_URL,
+      pageTitle: attr(meta(content, "title")),
+      pageDescription: attr(meta(content, "description")),
+      canonical: `${SITE_URL}/${lang}/${slug}/`,
+      hreflangLinks: slugHreflang,
+      languageOptions: langs
+        .map((l) => `          <option value="${l}"${l === lang ? " selected" : ""}>${l.toUpperCase()} - ${load(l)._languageName}</option>`)
+        .join("\n"),
+      content: content.replace(/<!--[\s\S]*?-->\s*/g, ""),
+    };
+    const html = legalTemplate.replace(/\{\{(\w+)\}\}/g, (m, key) => {
+      if (key in vals) return vals[key];
+      console.error(`✖ ${lang}/${slug}: bilinmeyen anahtar {{${key}}}`);
+      problems++;
+      return m;
+    });
+    const dir = path.join(OUT, lang, slug);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "index.html"), html);
+    if (lang === DEFAULT_LANG) {
+      const rootDir = path.join(OUT, slug);
+      fs.mkdirSync(rootDir, { recursive: true });
+      fs.writeFileSync(path.join(rootDir, "index.html"), html);
+    }
+  }
+  console.log(`✔ ${slug}: ${langs.length} dil + /${slug}/`);
+}
+
 // Ortak dosyalar (CSS vb.)
 fs.cpSync(path.join(SRC, "assets"), path.join(OUT, "assets"), { recursive: true });
+fs.cpSync(path.join(SRC, "img"), path.join(OUT, "assets", "img"), { recursive: true });
 
 // Kök sayfa: tarayıcı diline göre doğru dile yönlendirir
 const rootHtml = `<!doctype html>

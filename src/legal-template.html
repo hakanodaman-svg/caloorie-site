@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{pageTitle}} — Caloorie</title>
+<meta name="description" content="{{pageDescription}}">
+<link rel="canonical" href="{{canonical}}">
+{{hreflangLinks}}
+<meta name="theme-color" content="#F97316">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/icon-192.png">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="/{{lang}}/" class="brand" aria-label="Caloorie">
+      <span class="brand-logo"><img src="/assets/logo-mark.png" alt="" width="28" height="28"></span>
+      <span class="brand-name">Caloorie</span>
+    </a>
+    <div class="nav-right">
+      <label class="lang-select">
+        <span class="sr-only">{{languageLabel}}</span>
+        <select onchange="location.href='/'+this.value+'/{{slug}}/'">
+{{languageOptions}}
+        </select>
+      </label>
+    </div>
+  </div>
+</header>
+
+<main class="wrap legal">
+  <article>
+{{content}}
+  </article>
+</main>
+
+<footer class="wrap footer">
+  <span>© {{year}} Namadosoft. {{rights}}</span>
+  <nav aria-label="Legal">
+    <a href="{{termsUrl}}">{{terms}}</a>
+    <a href="{{privacyUrl}}">{{privacy}}</a>
+    <a href="/{{lang}}/deleteaccount/">{{deleteAccount}}</a>
+    <a href="mailto:info@caloorie.com">info@caloorie.com</a>
+  </nav>
+</footer>
+
+</body>
+</html>

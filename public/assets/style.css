@@ -170,6 +170,11 @@ p{margin:0}
   .section,.band{padding-top:64px;padding-bottom:64px}
   .wrap{padding-left:16px;padding-right:16px}
   .nav-right .btn{display:none}
+  .nav-inner{gap:12px}
+  main .btn{white-space:normal;text-align:center;padding-top:10px;padding-bottom:10px}
+  .cta .btn{width:100%}
+  .lang-select select{max-width:150px}
+  .brand-name{font-size:22px}
   .phone{transform:scale(.85);transform-origin:top center;margin-bottom:-100px}
   .lead{font-size:18px}
   .footer{flex-direction:column;align-items:flex-start}

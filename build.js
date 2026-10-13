@@ -32,11 +32,15 @@ const load = (lang) => JSON.parse(fs.readFileSync(path.join(localeDir, `${lang}.
 const base = load(DEFAULT_LANG);
 const baseKeys = Object.keys(base);
 
+// Google hreflang için ISO 639-1 kodu ister; Filipino için "tl" kullanılır
+const HREFLANG = { fil: "tl" };
+const hl = (l) => HREFLANG[l] || l;
+
 const stripTags = (s) => s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 const attr = (s) => stripTags(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
 const hreflangLinks = [
-  ...langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE_URL}/${l}/">`),
+  ...langs.map((l) => `<link rel="alternate" hreflang="${hl(l)}" href="${SITE_URL}/${l}/">`),
   `<link rel="alternate" hreflang="x-default" href="${SITE_URL}/${DEFAULT_LANG}/">`,
 ].join("\n");
 
@@ -104,7 +108,7 @@ const meta = (html, name) => (html.match(new RegExp(`<!--\\s*${name}:\\s*(.*?)\\
 
 for (const slug of slugs) {
   const slugHreflang = [
-    ...langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${SITE_URL}/${l}/${slug}/">`),
+    ...langs.map((l) => `<link rel="alternate" hreflang="${hl(l)}" href="${SITE_URL}/${l}/${slug}/">`),
     `<link rel="alternate" hreflang="x-default" href="${SITE_URL}/${DEFAULT_LANG}/${slug}/">`,
   ].join("\n");
 
@@ -166,6 +170,7 @@ ${hreflangLinks}
   var pick="${DEFAULT_LANG}";
   for(var i=0;i<prefs.length;i++){
     var full=prefs[i], short=full.split("-")[0];
+    if(short==="tl")short="fil";
     if(langs.indexOf(full)>-1){pick=full;break;}
     if(langs.indexOf(short)>-1){pick=short;break;}
   }

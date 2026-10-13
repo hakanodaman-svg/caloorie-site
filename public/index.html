@@ -3,15 +3,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Caloorie</title>
 <link rel="canonical" href="https://caloorie.com/en/">
+<link rel="alternate" hreflang="cs" href="https://caloorie.com/cs/">
+<link rel="alternate" hreflang="de" href="https://caloorie.com/de/">
 <link rel="alternate" hreflang="en" href="https://caloorie.com/en/">
+<link rel="alternate" hreflang="es" href="https://caloorie.com/es/">
+<link rel="alternate" hreflang="tl" href="https://caloorie.com/fil/">
+<link rel="alternate" hreflang="fr" href="https://caloorie.com/fr/">
+<link rel="alternate" hreflang="hu" href="https://caloorie.com/hu/">
+<link rel="alternate" hreflang="id" href="https://caloorie.com/id/">
+<link rel="alternate" hreflang="it" href="https://caloorie.com/it/">
+<link rel="alternate" hreflang="ms" href="https://caloorie.com/ms/">
+<link rel="alternate" hreflang="nl" href="https://caloorie.com/nl/">
+<link rel="alternate" hreflang="pl" href="https://caloorie.com/pl/">
+<link rel="alternate" hreflang="pt" href="https://caloorie.com/pt/">
+<link rel="alternate" hreflang="ro" href="https://caloorie.com/ro/">
+<link rel="alternate" hreflang="sv" href="https://caloorie.com/sv/">
+<link rel="alternate" hreflang="tr" href="https://caloorie.com/tr/">
+<link rel="alternate" hreflang="vi" href="https://caloorie.com/vi/">
 <link rel="alternate" hreflang="x-default" href="https://caloorie.com/en/">
 <script>
 (function(){
-  var langs=["en"];
+  var langs=["cs","de","en","es","fil","fr","hu","id","it","ms","nl","pl","pt","ro","sv","tr","vi"];
   var prefs=(navigator.languages||[navigator.language||""]).map(function(l){return l.toLowerCase();});
   var pick="en";
   for(var i=0;i<prefs.length;i++){
     var full=prefs[i], short=full.split("-")[0];
+    if(short==="tl")short="fil";
     if(langs.indexOf(full)>-1){pick=full;break;}
     if(langs.indexOf(short)>-1){pick=short;break;}
   }
